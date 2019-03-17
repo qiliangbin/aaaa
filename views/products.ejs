@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AdminLTE 2 | Starter</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect.
+  -->
+  <link rel="stylesheet" href="/dist/css/skins/skin-blue.min.css">
+  <!-- jQuery 2.2.3 -->
+
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to get the
+desired effect
+|---------------------------------------------------------|
+| SKINS         | skin-blue                               |
+|               | skin-black                              |
+|               | skin-purple                             |
+|               | skin-yellow                             |
+|               | skin-red                                |
+|               | skin-green                              |
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | fixed                                   |
+|               | layout-boxed                            |
+|               | layout-top-nav                          |
+|               | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+<%- include("./header.ejs") %>
+<%- include('./menu.ejs') %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <!-- 标题 -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      
+      <h1>
+        <a href="/products">
+        产品管理
+          <small>Optional description</small>
+        </a>
+        </h1> 
+     
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+        <li class="active">Here</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Your Page Content Here -->
+      <div class="box">
+        <!-- 头部--添加用户等 -->
+          <div class="box-header with-border">        
+              <h3 class="box-title pull-left">
+                <a href="/products/add">        
+                  <button class="btn btn-md btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span> 添加产品
+                  </button>
+                 </a> 
+              </h3>
+              <div class="input-group pull-left " style="width: 200px;margin-left: 15px;">
+                  <input type="text" class="form-control" id="searchTxt" placeholder="输入您的商品搜索" onchange="searchFn()">
+                  <div class="input-group-addon btn" onclick="searchFn()">
+                    <span class=" glyphicon glyphicon-search"></span>
+                  </div>
+              </div>
+                <div class="pull-right ">
+                    <a href="/products/import">
+                      <button class="btn btn-sm btn-link"><span class="glyphicon glyphicon-upload"></span>导入产品</button>
+                    </a>
+                    <a href="/products/exportUsers">
+                      <button class="btn btn-sm btn-link"><span class="glyphicon glyphicon-download"></span>导出产品</button>
+                    </a>
+                   
+                      <button class="btn btn-sm btn-danger " data-toggle="modal" data-target="#removeAll"></span>删除全部</button>
+                    
+                  </div>
+                  
+                </div>
+                <div class="box-body">
+                 
+                   <div >品牌:
+                      <% for(var i=0;i<brandArr.length;i++) {%>
+                          <a href="/products/brand?brand=<%- brandArr[i] %>"><%-brandArr[i]%></a>
+                      <%}%>
+                      
+                   </div>                                     
+                   <div style="margin-top: 20px">                     
+                      <a href="/products/sort?type=price&&num=1">价格升序</a>
+                      <a href="/products/sort?type=price&&num=-1">价格降序</a>
+                      <a href="/products/sort?type=sale&&num=1">销量升序</a>
+                      <a href="/products/sort?type=sale&&num=-1">销量降序</a>
+                   </div>   
+                </div>
+                  <!-- /.box-header -->
+                  <div class="box-body">
+                      <table class="table table-bordered">
+                        <tbody><tr>
+                          <th class="col-xs-1 text-center">序号</th>
+                          <th class="col-xs-1 text-center">id</th>
+                          <th class="col-xs-1 text-center">图片</th>
+                          <th class="col-xs-3 text-center">标题</th>
+                          <th class="col-xs-1 text-center">品牌</th>
+                          <th class="col-xs-1 text-center">价格</th>
+                          <th class="col-xs-1 text-center">销量</th>                          
+                          <th class="col-xs-1 text-center">编辑</th>
+                        </tr>
+                      <% for (var i=0;i<data.length;i++){ %>
+                          <tr>
+                              <td class="text-center"><%- i+1 %></td>
+                              <td class="text-center"><%- data[i].idNum %></td>
+                              <td class="text-center" ><img width="50px" src="<%- data[i].pic %>" alt=""></td>
+                              <td class="text-center"><%- data[i].title %></td>
+                              <td class="text-center"><%- data[i].brand %></td>
+                              <td class="text-center">￥<%- data[i].price %></td>
+                              <td class="text-center"><%- data[i].sale %></td>                             
+                              <td class="text-center">
+                                <button class="btn btn-xs btn-warning"  onclick=showModal(<%= data[i].idNum %>,'<%= data[i].price %>','<%= data[i].pic %>',<%= data[i].sale %>,<%= pageCode %>)>
+                                <span class=" glyphicon glyphicon-pencil"></span>
+                              </button>
+                                 
+                                <!-- <a href="/users/remove?tel=<%- data[i].tel %> "> -->
+                                    <button class="btn btn-xs btn-danger"  onclick=removeModal("<%- data[i].idNum %>")> <span class="glyphicon glyphicon-trash"></span></button></td>
+                                <!-- </a> -->
+                              </tr>
+                        
+                      <% } %>
+                      
+                      </tbody></table>
+                    </div>
+                    <!-- /.box-body -->                  
+                    <div class="box-footer clearfix">
+                        <div class="pull-left">每页显示：
+                          <input type="text" name="pageNumber" id="pageNumber" onchange=changePageNumber("<%= routerType %>")>
+                          
+                        </div>
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                          <li><a href="<%= routerType %>pageCode=<%- pageCode==1?pageCode:pageCode-1%>&pageNumber=<%-pageNumber%>">«</a></li>
+                          <% for(var i=0;i<totalNumber;i++) { %>
+                          <li class="<%- pageCode===i+1?'active':'' %>">
+                            <a href="<%= routerType %>pageCode=<%- i+1 %>&pageNumber=<%-pageNumber%>"><%- i+1 %></a>
+                          </li>
+                          <% } %>
+                          <li><a href="<%= routerType %>pageCode=<%- pageCode==totalNumber?pageCode:pageCode+1%>&pageNumber=<%-pageNumber%>">»</a></li>
+                        </ul>           
+          </div>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div> 
+  <!-- /.content-wrapper -->
+
+ <%- include('./footer.ejs') %>
+
+ <%-include('./sidebar.ejs') %>
+<!-- ./wrapper -->
+<!-- 更新模态框 -->
+<div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">更新商品</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" action="/products/updateAction" method="post">
+                <div class="box-body">
+                  <div class="form-group">
+                    <label for="tel" class="col-sm-2 control-label">ID编号</label>
+    
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="idNum" name="idNum"  readonly>
+                    </div>
+                  </div>
+                  <div class="form-group hidden">
+                      <label for="pageCode" class="col-sm-2 control-label">页码</label>
+      
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="pageCode" name="pageCode" placeholder="tel" readonly>
+                      </div>
+                    </div>
+                    <div class="form-group hidden">
+                        <label for="pageCode" class="col-sm-2 control-label">pageNumber</label>
+        
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" value="<%- pageNumber %>"  name="pageNumber"  readonly>
+                        </div>
+                      </div>
+                  <div class="form-group">
+                    <label for="nickname" class="col-sm-2 control-label">价格</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="price" name="price" placeholder="price">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="nickname" class="col-sm-2 control-label">图片</label>
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="pic" name="pic" placeholder="pic">
+                      </div>
+                    </div>
+                    <div class="form-group hidden">
+                        <label for="nickname" class="col-sm-2 control-label">标题</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="title" name="title" placeholder="title">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname" class="col-sm-2 control-label">销量</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="sale" name="sale" placeholder="sale">
+                        </div>
+                    </div>                  
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                  <button type="submit" class="btn btn-info pull-right">update</button>
+                </div>
+                <!-- /.box-footer -->
+              </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+<!-- 确认删除的Modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" id="remove">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">确认删除</h4>
+          </div>
+          <div class="modal-body">
+              <form class="form-horizontal" action="/products/remove" method="get">
+                  <div class="box-body">
+                    <div class="form-group">
+                      <label for="ID" class="col-sm-2 control-label">ID编号</label>
+      
+                      <div class="col-sm-10">
+                        <input type="text" class="form-control" id="removeIdnum" name="idNum" placeholder="idNum" readonly>
+                      </div> 
+                    </div>
+                    <div class="form-group hidden">
+                        <label for="tel" class="col-sm-2 control-label">pageCode</label>
+        
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control"  value="<%-pageCode%>" name="pageCode" readonly>
+                        </div> 
+                      </div>
+                      <div class="form-group hidden">
+                          <label for="tel" class="col-sm-2 control-label">pageNumber</label>
+          
+                          <div class="col-sm-10">
+                            <input type="text" class="form-control" name="pageNumber" value="<%-pageNumber%>" readonly>
+                          </div> 
+                        </div>
+                  </div>
+                  <!-- /.box-body -->
+                  <div class="box-footer">
+                    <button type="submit" class="btn btn-info pull-right">确认</button>
+                  </div>
+                  <!-- /.box-footer -->
+                </form>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- 删除全部 -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeAll">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">确认删除</h4>
+            </div>
+            <div class="modal-body">
+              <p>确认删除全部数据吗</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <a href='/products/removeAll?pageNumber=<%-pageNumber%>'>
+                <button type="button" class="btn btn-primary">确认</button>
+              </a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 2.2.3 -->
+<script src="/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/dist/js/app.min.js"></script>
+<!-- 函数 -->
+<script>
+  function showModal(id,price,pic,sale,pageCode){
+    $('#myModal').modal()
+    $('#idNum').val(id)
+    $('#price').val(price)
+    $('#sale').val(sale)
+    // $('#title').val(title)
+    $('#pic').val(pic)
+    $('#pageCode').val(pageCode)
+
+  }
+  function removeModal(idNum){
+    $('#remove').modal()
+    $('#removeIdnum').val(idNum)
+  }
+  function changePageNumber(routerType){
+    window.location.href=routerType+'pageCode=1&pageNumber='+$('#pageNumber').val()
+  }
+  function searchFn(){
+    window.location.href='/products/search?type=title&title='+$('#searchTxt').val()
+  }
+</script>
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
+</body>
+</html>
